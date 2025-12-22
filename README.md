@@ -1,73 +1,43 @@
-# Multi-Strategy Algorithmic Trading Backtest
+# Event-Driven Lead-Lag Analyzer
 
-## Overview
-Unified backtesting framework that runs three distinct algorithmic trading strategies and combines them into a portfolio. Educational demonstration of multi-strategy portfolio construction with realistic implementation details.
+## 📊 Overview
+A Python-based algorithmic trading research tool that identifies statistically significant lead-lag relationships between major FX pairs and gold. Uses event-driven signals (breakouts and mean reversions) with RSI filtering to detect predictive patterns across assets.
 
-## Strategies
+## 🔑 Key Features
+- **Multi-Asset Analysis**: 8 major FX pairs + gold (XAUUSD)
+- **Dual Timeframes**: M5 and M15 for different trading styles
+- **Four Signal Types**: Breakout long/short, bounce long/short
+- **Statistical Rigor**: Binomial test ensures p < 0.05 significance
+- **Realistic Simulation**: 10-pip TP / 20-pip SL with proper pip calculations
+- **Visualization**: Heatmaps, distributions, and detailed reports
 
-### Strategy 1: Per-Symbol Optimizer
-- **Markets**: EURUSD, AUDUSD
-- **Timeframe**: H1
-- **Logic**: Grid search optimization of parameters (horizon, TP/SL, probability thresholds) per symbol using logistic regression on technical features
-- **Features**: Range, gaps, run length, permutation entropy, z-scores, etc.
+## 📈 Real Results (180-day backtest)
+- **9 significant pairs** identified
+- **Best Pair**: EURUSD → XAUUSD (M15): 68.8% hit rate, PF 2.00
+- **M15 outperforms M5**: Higher profit factors (1.20-2.00 vs 0.82-1.10)
+- **Gold as common follower**: 5/9 pairs lead to XAUUSD movements
 
-### Strategy 2: Aggressive EURUSD
-- **Markets**: EURUSD (primary), GBPUSD (optional)
-- **Timeframe**: H1
-- **Logic**: BOCPD + regime switching + EVT + Thompson Sampling bandit
-- **Complexity**: Dynamic parameters based on market regime (calm/trend/turbulent) and recent performance patterns
+## 🚀 Quick Start
+1. Install MetaTrader 5 and enable Python integration
+2. Install requirements: `pip install -r requirements.txt`
+3. Run analysis: `python lead_lag_analyzer.py`
+4. Check `event_lead_lag/` folder for results and visualizations
 
-### Strategy 3: TS2Vec + Classifier
-- **Markets**: EURUSD
-- **Timeframe**: M15
-- **Logic**: TS2Vec-style embeddings + calibrated classifier (XGBoost/RandomForest)
-- **Features**: Relative price features, embeddings from contrastive learning
+## ⚠️ Important Notes
+- **Educational Purpose**: This is a research tool, not production trading software
+- **Transaction Costs**: Not included - real trading would reduce profitability
+- **Market Conditions**: Results based on last 180 days; relationships may change
+- **Risk Management**: Always use proper risk controls in live trading
 
-## Real Results Summary (from actual output)
-| Strategy | Trades | WinRate | Profit Factor | Net PnL (USD) | Max DD (USD) | Sharpe |
-|----------|--------|---------|---------------|---------------|--------------|--------|
-| STRAT1   | 1      | 100.00% | ∞             | +20.35        | 0.00         | 20.35  |
-| STRAT2   | 36     | 41.67%  | 0.646         | -336.42       | 441.99       | -0.187 |
-| STRAT3   | 66     | 46.97%  | 0.986         | -11.10        | 202.80       | -0.006 |
-| **PORTFOLIO** | **103** | **45.63%** | **0.815** | **-327.17** | **457.67** | **-0.083** |
+## 📁 Output Files
+- `lead_lag_results_detailed.csv`: All significant pairs with metrics
+- `analysis_report.txt`: Summary report
+- `plots/`: Heatmaps and distribution charts
 
-## Period
-Approximately May 2024 - December 2025 (varies by symbol and data availability)
+## 👨💻 Author
+**Vladimir Korneev**  
+Telegram: [t.me/realistic_algotrading](https://t.me/realistic_algotrading)  
+GitHub: [github.com/vger-cell/realistic-algotrading](https://github.com/vger-cell/realistic-algotrading)
 
-## Key Implementation Details
-
-### Time Handling
-- Proper timezone-naive normalization across all strategies
-- Anti-leakage measures with horizon buffers
-- Time series splits for train/validation/test
-
-### Risk Management
-- Fixed lot size: 0.1
-- Spread and commission included in calculations
-- Peak margin calculation for portfolio
-- Daily stop losses and trade limits
-
-### Educational Value
-1. **Realistic backtest structure** with proper train/val/test splits
-2. **Multiple strategy types** from simple to complex
-3. **Unified portfolio metrics** showing real aggregation challenges
-4. **Transparent parameter optimization** with grid search
-5. **Advanced techniques** like BOCPD, EVT, TS2Vec, bandit algorithms
-
-## Important Disclaimer
-⚠️ **FOR EDUCATIONAL PURPOSES ONLY**
-
-- This is a BACKTEST, not live trading results
-- Only Strategy 1 showed profit in test period (1 trade)
-- Strategies 2 and 3 were net losers
-- The portfolio lost money overall
-- **DO NOT USE FOR LIVE TRADING**
-- Demonstrates challenges of combining multiple strategies
-
-## Output Files
-- `outputs_unified/all_trades.csv`: All trades from all strategies
-- `outputs_unified/equity_all.png`: Portfolio and individual strategy equity curves
-
-## Installation
-```bash
-pip install -r requirements.txt
+## 📜 License
+MIT License - Free for educational and research use
