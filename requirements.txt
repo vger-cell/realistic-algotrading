@@ -1,16 +1,5 @@
-
-# Trading Strategy Backtester Requirements
-# For educational purposes only
-
 MetaTrader5==5.0.44
-pandas==2.2.1
-numpy==1.26.4
-python-dateutil==2.9.0.post0
-pytz==2024.1
-
-# Development dependencies (optional)
-# matplotlib==3.8.3  # For visualization
-# jupyter==1.0.0    # For analysis notebooks
-
-# Note: Requires MetaTrader 5 terminal for data access
-# Free demo accounts available at https://www.metatrader5.com
+pandas==2.1.4
+numpy==1.24.3
+python-dateutil==2.8.2
+pytz==2023.3
