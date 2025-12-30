@@ -1,35 +1,27 @@
-# Liquidity Zone Trading Strategy Backtester
+# Realistic Algorithmic Trading System
 
-An optimized algorithmic trading strategy that identifies and trades toward liquidity zones in EURUSD.
+A comprehensive trading system that evaluates 5 common technical indicators on EURUSD data with realistic trading conditions.
 
-## 📊 Strategy Overview
+## System Concept
 
-This strategy identifies potential liquidity zones (round-number levels and recent extremes) and enters trades toward these zones with optimized risk management.
+This system implements a scientific approach to strategy evaluation by comparing two distinct trading methodologies:
 
-### Key Features:
-- **Zone Detection**: Identifies levels 20-35 pips from current price
-- **Risk Management**: Dynamic stop-loss (70% of distance), minimum profit filters
-- **Market Filters**: RSI-based overbought/oversold avoidance
-- **Forward Testing**: Tests on unseen market data
+1. **Direct Trading Approach**: Uses signals from the top-performing technical indicators based on historical performance
+2. **Contrarian Trading Approach**: Inverts signals from the worst-performing indicators, testing if "doing the opposite" of losing strategies can be profitable
 
-## 📈 Backtest Results (EURUSD M15, 90 days)
+The system incorporates realistic trading parameters including slippage, commission, and risk management to provide a more accurate simulation of live trading conditions than typical academic backtests.
 
-| Metric | Result | Status |
-|--------|--------|--------|
-| Total Trades | 280 | ⚠️ |
-| Win Rate | 46.4% | ✅ Improved |
-| Total P&L | -2.9 pips | ❌ Break-even |
-| Avg Trade | -0.01 pips | ❌ No edge |
-| Best Zones | 30-35 pips (52% WR) | ✅ Promising |
+## Features
 
-### Key Insights:
-1. **Win Rate improved** from 35.3% to 46.4%
-2. **No profitability** despite improved win rate
-3. **30-35 pip zones** show best performance (52% WR)
-4. **Calculation bug** in P&L analysis identified
+- **5 Technical Indicators**: RSI, Stochastic, MACD, Moving Averages, Bollinger Bands
+- **Realistic Backtesting**: Includes slippage, commission, and realistic execution
+- **Risk Management**: Fixed 10-pip TP, 20-pip SL, max 24-hour trade duration
+- **Strategy Comparison**: Direct trading vs. contrarian (inverted) approach
+- **Comprehensive Metrics**: Win rate, profit factor, drawdown, trade duration
 
-## 🛠 Installation
+## Installation
 
-1. Install requirements:
-```bash
-pip install -r requirements.txt
+1. Install MetaTrader 5 and set up a demo account
+2. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
