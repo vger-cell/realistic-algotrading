@@ -1,3 +1,26 @@
+"""
+Realistic EURUSD Trading System
+Author: Vladimir Korneev
+Telegram: t.me/realistic_algotrading
+Repository: github.com/vger-cell/realistic-algotrading
+
+A comprehensive algorithmic trading system that evaluates 5 common technical indicators
+on EURUSD H1 data. The system compares direct trading (using best strategies) against
+contrarian trading (inverting worst strategies) with realistic parameters including
+slippage, commission, and risk management.
+
+Key Features:
+- Realistic backtesting with slippage and commission
+- 5 indicator strategies: RSI, Stochastic, MACD, Moving Averages, Bollinger Bands
+- Risk management: 10-pip TP, 20-pip SL, max 24-hour trade duration
+- Comprehensive performance metrics and comparison
+
+Results show direct trading with top strategies outperformed contrarian approach
+during the test period (Sep-Dec 2025).
+
+Disclaimer: For educational purposes only. Past performance does not guarantee future results.
+"""
+
 import MetaTrader5 as mt5
 import pandas as pd
 import numpy as np
