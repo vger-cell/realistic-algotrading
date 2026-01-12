@@ -1,8 +1,18 @@
+# M1 Randomness Trader Requirements
+# For realistic algorithmic trading research
 
-MetaTrader5>=5.0.0
-pandas>=1.5.0
-numpy>=1.21.0
-scikit-learn>=1.0.0
-matplotlib>=3.5.0
-torch>=1.13.0
-xgboost>=1.7.0
+# Core dependencies
+MetaTrader5>=5.0.41
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Machine learning
+tensorflow>=2.13.0
+
+# Development & analysis
+matplotlib>=3.7.0  # For visualization (optional)
+jupyter>=1.0.0     # For experimentation (optional)
+black>=23.0.0      # Code formatting (optional)
+
+# Note: MT5 requires Windows and installed MetaTrader 5 terminal
