@@ -1,63 +1,47 @@
-TS2Vec + Random Forest Trading Strategy
-📈 Project Focus & Current Status
-This project represents an ongoing development effort to create a robust, machine learning-based trading system for the EURUSD currency pair. The repository has been consolidated to focus on a single, most promising strategy (Strategy 3: TS2Vec + Random Forest Classifier) following extensive backtesting and comparative analysis of multiple approaches.
+# MTF Feature Effectiveness Analysis for EURUSD
 
-The core of this strategy is a hybrid model combining:
+**Author**: [Vladimir Korneev](https://t.me/realistic_algotrading)  
+**Repository**: [github.com/vger-cell/realistic-algotrading](https://github.com/vger-cell/realistic-algotrading)
 
-TS2Vec (LSTM-based encoder): Transforms raw 15-minute price sequences into compact, meaningful 32-dimensional embeddings.
+## What This Project Is About
 
-Random Forest Classifier: Predicts price direction 32 bars ahead using the learned embeddings, achieving a consistent ~72.5% accuracy on out-of-sample data.
+Just finished a deep analysis of 15 technical features for predicting EURUSD price movement on the M15 timeframe. The results completely overturn conventional wisdom in retail trading!
 
-🛡️ Key Development Principles & Safeguards
-A primary focus of this development cycle has been implementing rigorous safeguards against data leakage to ensure model validity and realistic performance estimates:
+## Key Findings
 
-Temporal Data Splitting: Train (75%) and test (25%) sets are strictly separated by time to prevent future information from contaminating the training process.
+✅ **The strongest feature is `H1_position`** — the relative position of the current price within the last 50-bar H1 range. It improves R² by **+0.0517**, which is a huge leap for short-term forecasting!  
+✅ All top 7 features are **multi-timeframe (MTF)**: positions on H1/H4, trends, and distances to moving averages.  
+❌ **All classic indicators failed**:  
+   • Price Z-Score → R² drop of -0.0016  
+   • Volatility (20 bars) → -0.0015  
+   • EMA(12)/EMA(26) ratio → -0.0013  
 
-Statistic Isolation: Feature normalization (scaling) is performed using only training set statistics (mean, std). The test set is transformed using these pre-computed values.
+## Why This Matters
 
-Sequential Processing: Feature engineering (e.g., indicator calculation) is applied separately to train and test sets to prevent look-ahead bias.
+This proves that **higher timeframe context** (where price sits inside the H1/H4 range) is far more valuable than oscillators or volatility measures. You’re essentially “seeing” market structure through positional metrics — just like professional traders do.
 
-Validation for Calibration: The calibrated classifier is fit on a hold-out validation split from the training data, never on the test set.
+## What’s Next?
 
-These checks are verified in the logs (e.g., [LEAK-CHECK] Train end: 2025-08-13 14:00:00 < [LEAK-CHECK] Test start: 2025-08-13 14:15:00).
+We’re building a live trading strategy based on these features with:  
+• Hourly retraining (model updates every hour)  
+• Walk-forward validation (no data leakage)  
+• Dynamic Stop Loss / Take Profit levels  
 
-🔍 Latest Backtest Results & Analysis
-A recent backtest over a 4+ month period (Aug-Dec 2025) yielded the following metrics, highlighting both the model's predictive power and areas for tactical improvement:
+## How to Use This Code
 
-Model Accuracy / F1-Score: 72.6% / 0.722 – The core predictive model shows strong and consistent signal.
+1. Install the [MetaTrader 5 terminal](https://www.metatrader5.com/)  
+2. Run the script while MT5 is connected  
+3. Check the generated `feature_analysis_EURUSD_*.json` for full rankings  
 
-Strategy Performance: Win Rate: 45% | Profit Factor: 0.90 | Net PnL: -$5.50
+Recommended feature set for your own models:
+```python
+['log_return', 'high_low_range', 'H1_position', 'H4_dist_ma', 
+ 'H4_position', 'H4_trend', 'trend_pos_interaction']
+```
 
-Risk Management: Avg Win: $5.50 | Avg Loss: -$5.00 | Risk/Reward: 1.10
+## Important Disclaimer
 
-🧐 Interpreting the Results
-The results reveal a clear disconnect: a high-accuracy predictive model is currently paired with a sub-optimal trading strategy. The positive Risk/Reward (1.10) is a good foundation, but the sub-1.0 Profit Factor and low Win Rate indicate the entry/exit logic needs refinement.
+This research is for **educational purposes only**. Historical performance does **not** guarantee future results. Always test strategies on a demo account before going live.
 
-Root Cause Identified: The aggressive fixes applied to improve the previous losing strategy (like raising probability thresholds to 0.6 and adding a trend filter) were too restrictive. They reduced false signals but also filtered out 98.3% of all potential trading opportunities, leaving too few trades (only 20) for the strategy's edge to materialize statistically.
-
-🚀 Next Steps: Strategic Optimization Roadmap
-The immediate development priority is systematic parameter optimization to bridge the gap between model accuracy and trading profitability. The focus will be on finding the optimal balance between signal frequency and quality.
-
-The optimization pipeline will target:
-
-Signal Generation Parameters:
-
-Probability thresholds (PROB_THRESHOLD_BUY/SELL)
-
-Minimum probability difference (MIN_PROB_DIFFERENCE)
-
-Trend filter sensitivity (MIN_TREND_STRENGTH)
-
-Trade Management Parameters:
-
-Take-Profit / Stop-Loss levels (TP_PIPS, SL_PIPS)
-
-Position sizing logic
-
-Model Hyperparameters (secondary):
-
-Random Forest depth, number of estimators.
-
-TS2Vec embedding dimension, learning rate.
-
-Optimization will employ walk-forward analysis or cross-validation on sequential data to maintain temporal integrity and prevent overfitting.
+> Follow updates: [t.me/realistic_algotrading](https://t.me/realistic_algotrading)  
+> Full open-source code: [github.com/vger-cell/realistic-algotrading](https://github.com/vger-cell/realistic-algotrading)
