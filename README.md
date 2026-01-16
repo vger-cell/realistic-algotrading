@@ -1,63 +1,45 @@
-TS2Vec + Random Forest Trading Strategy
-📈 Project Focus & Current Status
-This project represents an ongoing development effort to create a robust, machine learning-based trading system for the EURUSD currency pair. The repository has been consolidated to focus on a single, most promising strategy (Strategy 3: TS2Vec + Random Forest Classifier) following extensive backtesting and comparative analysis of multiple approaches.
+# Realistic AlgoTrading: Walk-Forward ML Strategy for EURUSD
 
-The core of this strategy is a hybrid model combining:
+This project demonstrates a disciplined approach to developing and backtesting a machine learning trading strategy. It uses a walk-forward analysis to provide a realistic assessment of performance, avoiding the common pitfall of overfitting.
 
-TS2Vec (LSTM-based encoder): Transforms raw 15-minute price sequences into compact, meaningful 32-dimensional embeddings.
+## Strategy Overview
 
-Random Forest Classifier: Predicts price direction 32 bars ahead using the learned embeddings, achieving a consistent ~72.5% accuracy on out-of-sample data.
+The core idea is to use a simple `Ridge` regression model to predict the short-term direction of the EURUSD price. The model is trained on a rich set of 18 technical features engineered from M15, H1, and H4 timeframes. To ensure robustness, the strategy incorporates several layers of risk management and adaptive logic:
 
-🛡️ Key Development Principles & Safeguards
-A primary focus of this development cycle has been implementing rigorous safeguards against data leakage to ensure model validity and realistic performance estimates:
+*   **Walk-Forward Analysis:** The model is retrained weekly on a rolling 180-day window and tested on the following 7 days.
+*   **Dynamic Risk Management:** Stop Loss (SL) and Take Profit (TP) levels are optimized on each training window.
+*   **Adaptive Trade Filtering:** 
+    *   Uses asymmetric ADX thresholds to confirm trend strength for entries.
+    *   Requires price to be above/below an H4 moving average for BUY/SELL signals.
+    *   **Critically, it automatically disables all SELL trades if their recent Profit Factor drops below 0.5.**
 
-Temporal Data Splitting: Train (75%) and test (25%) sets are strictly separated by time to prevent future information from contaminating the training process.
+## Key Results (Jan 2024 - Jan 2026)
 
-Statistic Isolation: Feature normalization (scaling) is performed using only training set statistics (mean, std). The test set is transformed using these pre-computed values.
+The backtest yielded the following metrics:
+*   **Total PnL:** +$973.50
+*   **Total Trades:** 197
+*   **Average Win Rate:** 52.1%
+*   **Profit Factor:** 1.43
+*   **Sharpe Ratio:** 2.39
 
-Sequential Processing: Feature engineering (e.g., indicator calculation) is applied separately to train and test sets to prevent look-ahead bias.
+### Critical Insight & Limitations
 
-Validation for Calibration: The calibrated classifier is fit on a hold-out validation split from the training data, never on the test set.
+The most important finding is that the **SELL signals were consistently unprofitable**. The system's adaptive logic correctly identified this and disabled short trades for the vast majority of the test period. This means the strategy's profitability is **entirely dependent on a long-bias market regime** (like the one seen in EURUSD during 2024-2026).
 
-These checks are verified in the logs (e.g., [LEAK-CHECK] Train end: 2025-08-13 14:00:00 < [LEAK-CHECK] Test start: 2025-08-13 14:15:00).
+**This is not a "holy grail" but a realistic example of how a model can adapt to market conditions.** Its future performance is highly uncertain if the market enters a strong bearish phase. This project serves as an educational tool on the importance of:
+1.  Rigorous, leak-free backtesting.
+2.  Adaptive risk management.
+3.  Understanding the directional bias of your strategy.
 
-🔍 Latest Backtest Results & Analysis
-A recent backtest over a 4+ month period (Aug-Dec 2025) yielded the following metrics, highlighting both the model's predictive power and areas for tactical improvement:
+## Getting Started
 
-Model Accuracy / F1-Score: 72.6% / 0.722 – The core predictive model shows strong and consistent signal.
+1.  Clone the repository.
+2.  Install the required packages: `pip install -r requirements.txt`.
+3.  Ensure you have MetaTrader 5 running and the `MetaTrader5` Python package configured.
+4.  Run `walkforward_analysis.py`.
 
-Strategy Performance: Win Rate: 45% | Profit Factor: 0.90 | Net PnL: -$5.50
+**Disclaimer:** This is for educational and research purposes only. Past performance is not indicative of future results. Trading involves significant risk of loss.
 
-Risk Management: Avg Win: $5.50 | Avg Loss: -$5.00 | Risk/Reward: 1.10
-
-🧐 Interpreting the Results
-The results reveal a clear disconnect: a high-accuracy predictive model is currently paired with a sub-optimal trading strategy. The positive Risk/Reward (1.10) is a good foundation, but the sub-1.0 Profit Factor and low Win Rate indicate the entry/exit logic needs refinement.
-
-Root Cause Identified: The aggressive fixes applied to improve the previous losing strategy (like raising probability thresholds to 0.6 and adding a trend filter) were too restrictive. They reduced false signals but also filtered out 98.3% of all potential trading opportunities, leaving too few trades (only 20) for the strategy's edge to materialize statistically.
-
-🚀 Next Steps: Strategic Optimization Roadmap
-The immediate development priority is systematic parameter optimization to bridge the gap between model accuracy and trading profitability. The focus will be on finding the optimal balance between signal frequency and quality.
-
-The optimization pipeline will target:
-
-Signal Generation Parameters:
-
-Probability thresholds (PROB_THRESHOLD_BUY/SELL)
-
-Minimum probability difference (MIN_PROB_DIFFERENCE)
-
-Trend filter sensitivity (MIN_TREND_STRENGTH)
-
-Trade Management Parameters:
-
-Take-Profit / Stop-Loss levels (TP_PIPS, SL_PIPS)
-
-Position sizing logic
-
-Model Hyperparameters (secondary):
-
-Random Forest depth, number of estimators.
-
-TS2Vec embedding dimension, learning rate.
-
-Optimization will employ walk-forward analysis or cross-validation on sequential data to maintain temporal integrity and prevent overfitting.
+---
+**Author:** Vladimir Korneev  
+**Telegram:** [t.me/realistic_algotrading](https://t.me/realistic_algotrading)  
