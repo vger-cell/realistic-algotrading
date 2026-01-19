@@ -1,63 +1,82 @@
-TS2Vec + Random Forest Trading Strategy
-📈 Project Focus & Current Status
-This project represents an ongoing development effort to create a robust, machine learning-based trading system for the EURUSD currency pair. The repository has been consolidated to focus on a single, most promising strategy (Strategy 3: TS2Vec + Random Forest Classifier) following extensive backtesting and comparative analysis of multiple approaches.
+EURUSD → XAUUSD Lead-Lag Strategy
+Overview
+A lead-lag correlation trading strategy that uses EURUSD to generate signals for trading XAUUSD (Gold) on the M15 timeframe. The strategy identifies bounce signals from support/resistance levels with RSI confirmation.
 
-The core of this strategy is a hybrid model combining:
+Strategy Logic
+Lead Instrument: EURUSD (signal generator)
 
-TS2Vec (LSTM-based encoder): Transforms raw 15-minute price sequences into compact, meaningful 32-dimensional embeddings.
+Follow Instrument: XAUUSD (trade execution)
 
-Random Forest Classifier: Predicts price direction 32 bars ahead using the learned embeddings, achieving a consistent ~72.5% accuracy on out-of-sample data.
+Signal Types: Bounce from support (long) or resistance (short)
 
-🛡️ Key Development Principles & Safeguards
-A primary focus of this development cycle has been implementing rigorous safeguards against data leakage to ensure model validity and realistic performance estimates:
+Entry: 15-minute delay after signal
 
-Temporal Data Splitting: Train (75%) and test (25%) sets are strictly separated by time to prevent future information from contaminating the training process.
+Exit: Fixed TP=180 pips, SL=120 pips (1.5:1 ratio)
 
-Statistic Isolation: Feature normalization (scaling) is performed using only training set statistics (mean, std). The test set is transformed using these pre-computed values.
+Position Sizing: 1% risk per trade
 
-Sequential Processing: Feature engineering (e.g., indicator calculation) is applied separately to train and test sets to prevent look-ahead bias.
+Backtest Results (Best Configuration)
+Total Return: 5.16% (annualized ~20.64%)
 
-Validation for Calibration: The calibrated classifier is fit on a hold-out validation split from the training data, never on the test set.
+Win Rate: 52.9%
 
-These checks are verified in the logs (e.g., [LEAK-CHECK] Train end: 2025-08-13 14:00:00 < [LEAK-CHECK] Test start: 2025-08-13 14:15:00).
+Profit Factor: 1.61
 
-🔍 Latest Backtest Results & Analysis
-A recent backtest over a 4+ month period (Aug-Dec 2025) yielded the following metrics, highlighting both the model's predictive power and areas for tactical improvement:
+Max Drawdown: 3.03%
 
-Model Accuracy / F1-Score: 72.6% / 0.722 – The core predictive model shows strong and consistent signal.
+Sharpe Ratio: 3.64
 
-Strategy Performance: Win Rate: 45% | Profit Factor: 0.90 | Net PnL: -$5.50
+Total Trades: 17 (5.6 trades/month)
 
-Risk Management: Avg Win: $5.50 | Avg Loss: -$5.00 | Risk/Reward: 1.10
+Avg Trade Profit: $30.36
 
-🧐 Interpreting the Results
-The results reveal a clear disconnect: a high-accuracy predictive model is currently paired with a sub-optimal trading strategy. The positive Risk/Reward (1.10) is a good foundation, but the sub-1.0 Profit Factor and low Win Rate indicate the entry/exit logic needs refinement.
+Key Findings
+Only bounce signals worked - No breakout signals were generated
 
-Root Cause Identified: The aggressive fixes applied to improve the previous losing strategy (like raising probability thresholds to 0.6 and adding a trend filter) were too restrictive. They reduced false signals but also filtered out 98.3% of all potential trading opportunities, leaving too few trades (only 20) for the strategy's edge to materialize statistically.
+Fixed stops outperformed ATR-based (3.16% vs -0.28%)
 
-🚀 Next Steps: Strategic Optimization Roadmap
-The immediate development priority is systematic parameter optimization to bridge the gap between model accuracy and trading profitability. The focus will be on finding the optimal balance between signal frequency and quality.
+Trend filter too restrictive - Generated 0 signals when enabled
 
-The optimization pipeline will target:
+Aggressive parameters (lower RSI thresholds) produced best results
 
-Signal Generation Parameters:
+Installation
+bash
+pip install -r requirements.txt
+Usage
+Install MetaTrader 5
 
-Probability thresholds (PROB_THRESHOLD_BUY/SELL)
+Configure your MT5 account credentials
 
-Minimum probability difference (MIN_PROB_DIFFERENCE)
+Run the backtest:
 
-Trend filter sensitivity (MIN_TREND_STRENGTH)
+bash
+python eurusd_xauusd_strategy.py
+Project Structure
+eurusd_xauusd_strategy.py - Main strategy code
 
-Trade Management Parameters:
+requirements.txt - Python dependencies
 
-Take-Profit / Stop-Loss levels (TP_PIPS, SL_PIPS)
+backtest_results/ - Output directory for results
 
-Position sizing logic
+comparison_results/ - Configuration comparison data
 
-Model Hyperparameters (secondary):
+Configuration
+The strategy includes 5 test configurations:
 
-Random Forest depth, number of estimators.
+Fixed TP/SL (baseline)
 
-TS2Vec embedding dimension, learning rate.
+ATR-based stops
 
-Optimization will employ walk-forward analysis or cross-validation on sequential data to maintain temporal integrity and prevent overfitting.
+With trend filter (ADX)
+
+Full system (all filters)
+
+Aggressive (more signals) - Best performing
+
+Disclaimer
+This is educational software for backtesting purposes only. Past performance does not guarantee future results. Trading involves risk of loss.
+
+Author
+Vladimir Korneev
+Telegram: @realistic_algotrading
+Repository: github.com/vger-cell/realistic-algotrading
